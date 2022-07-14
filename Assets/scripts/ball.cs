@@ -5,7 +5,14 @@ using UnityEngine;
 public class ball : MonoBehaviour
 {
     public Rigidbody rb;
-    public int f;
+    public int F_Z;
+    public int F_X;
+
+    public float shake_duration;
+    public float shake_magnitude;
+
+    public camera_shake cam_shake;
+
          Material m4,m3,m2;
          public Transform explo;
 
@@ -19,18 +26,34 @@ public class ball : MonoBehaviour
             if(brick.gameObject.GetComponent<Renderer>().sharedMaterial.name=="m3") m3 =brick.gameObject.GetComponent<Renderer>().sharedMaterial;
               if(brick.gameObject.GetComponent<Renderer>().sharedMaterial.name=="m2") m2 =brick.gameObject.GetComponent<Renderer>().sharedMaterial;
          }
-          rb.AddForce(0,0,f*Time.deltaTime);
+
+        float FDel_Z = F_Z * Time.deltaTime ;
+        float FDel_X = F_X * Time.deltaTime ;
+        rb.AddForce(FDel_X ,0, FDel_Z);
+
+
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey("s"))
+        {
+            // test part for shaking
+            StartCoroutine(cam_shake.shake(shake_duration, shake_magnitude));
+        }
       
     }
-    void OnCollisionEnter(Collision other){ 
 
 
-        if(other.gameObject.tag=="brick")
+    void OnCollisionEnter(Collision other){
+
+        
+
+
+        if (other.gameObject.tag=="brick")
 
           {
             if(other.gameObject.GetComponent<Renderer>().sharedMaterial.name=="m5"){
@@ -53,15 +76,15 @@ public class ball : MonoBehaviour
             
             
               
-          rb.AddForce(0,0,-2*f*Time.deltaTime);
+          rb.AddForce(0,0,-2*F_Z*Time.deltaTime);
           }
 
         else if(other.gameObject.tag=="player")
-              rb.AddForce(0,0,f*Time.deltaTime);
+              rb.AddForce(0,0, F_Z * Time.deltaTime);
 
     else if(other.gameObject.tag=="bottom"){
       Debug.Log("bottom");
-    rb.AddForce(1*f*Time.deltaTime,0,0);
+    rb.AddForce(1* F_Z * Time.deltaTime, 0,0);
 
        GameObject[] bricks= GameObject.FindGameObjectsWithTag("brick");
         foreach(GameObject brick in bricks){
@@ -89,13 +112,13 @@ public class ball : MonoBehaviour
          
 
             else if(other.gameObject.tag=="rightWall")
-rb.AddForce(-1*f * Time.deltaTime,0,0);
+rb.AddForce(-1* F_Z * Time.deltaTime, 0,0);
 
             else if(other.gameObject.tag=="leftWall")
-rb.AddForce(f * Time.deltaTime,0,0);
+rb.AddForce(F_Z * Time.deltaTime, 0,0);
 
             else if(other.gameObject.tag=="topWall")
-rb.AddForce(0,0,-1*f * Time.deltaTime);
+rb.AddForce(0,0,-1* F_Z * Time.deltaTime);
 
             else if(other.gameObject.tag=="downWall")
 Debug.Log("gameOver");
